@@ -1,17 +1,6 @@
 #ifndef PRMSTAR_HEADER_INCLUDED
 #define PRMSTAR_HEADER_INCLUDED
 
-/* #include <math.h>
-#include <stdlib.h>
-#include <time.h>
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <algorithm>
-#include <string>
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp> */
 #include <queue>
 #include "decomposition.hpp"
 
