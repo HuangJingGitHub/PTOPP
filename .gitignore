@@ -1,0 +1,40 @@
+# macOS metadata
+.DS_Store
+._*
+
+# Editor and IDE state
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# MATLAB autosave files
+*.asv
+
+# Catkin, ROS, and CMake build outputs
+/build/
+/devel/
+/install/
+/log/
+/logs/
+/.catkin_tools/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+compile_commands.json
+
+# Local source backups
+backup_*/
+
+# Generated experiment data and analysis files
+/src/ptopp/src/data/**
+!/src/ptopp/src/data/**/
+!/src/ptopp/src/data/**/.gitkeep
+
+# Generated figures and visualization captures
+/src/ptopp/src/img/**
+!/src/ptopp/src/img/**/
+!/src/ptopp/src/img/**/.gitkeep

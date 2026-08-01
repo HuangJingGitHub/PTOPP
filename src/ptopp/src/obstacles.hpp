@@ -298,6 +298,66 @@ float MinDistanceToObstaclesVec(const vector<PolygonObstacle>& obstacles, Point2
     return res;
 }
 
+float MinDistanceNonIntersectSegs(Point2f p1, Point2f p2, Point2f q1, Point2f q2) {
+    float res = FLT_MAX;
+    Point2f closest_pt_p1 = ClosestPtOnSegmentToPt(q1, q2, p1);
+    float dist_p1 = cv::norm(p1 - closest_pt_p1);
+    res = min(res, dist_p1);
+
+    Point2f closest_pt_p2 = ClosestPtOnSegmentToPt(q1, q2, p2);
+    float dist_p2 = cv::norm(p2 - closest_pt_p2);
+    res = min(res, dist_p2);
+
+    Point2f closest_pt_q1 = ClosestPtOnSegmentToPt(p1, p2, q1);
+    float dist_q1 = cv::norm(q1 - closest_pt_q1);
+    res = min(res, dist_q1);
+
+    Point2f closest_pt_q2 = ClosestPtOnSegmentToPt(p1, p2, q2);
+    float dist_q2 = cv::norm(q2 - closest_pt_q2);
+    res = min(res, dist_q2);
+
+    return res;
+} 
+
+float SegMinDistanceToObstaclesVec(const vector<PolygonObstacle>& obstacles, Point2f from_pt, Point2f to_pt) {
+    if (cv::norm(to_pt - from_pt) < 1e-6)
+        return MinDistanceToObstaclesVec(obstacles, from_pt);
+
+    float res = FLT_MAX;
+    for (const PolygonObstacle& obs : obstacles) {
+        int obs_vertices_num = obs.vertices.size();
+        if (obs_vertices_num == 0)
+            continue;
+        if (obs_vertices_num == 1) {
+            Point2f closest_pt = ClosestPtOnSegmentToPt(from_pt, to_pt, obs.vertices[0]);
+            res = min(res, (float)cv::norm(obs.vertices[0] - closest_pt));
+            continue;
+        }
+
+        for (int i = 0; i < obs_vertices_num; i++) {
+            const Point2f& obs_edge_from = obs.vertices[i];
+            const Point2f& obs_edge_to = obs.vertices[(i + 1) % obs_vertices_num];
+            // if (SegmentIntersection(from_pt, to_pt, obs_edge_from, obs_edge_to))
+            //     return 0;
+            res = min(res, MinDistanceNonIntersectSegs(from_pt, to_pt, obs_edge_from, obs_edge_to));
+        }
+    }
+    return res;
+}
+
+// float SegMinDistanceToObstaclesVec(const vector<PolygonObstacle>& obstacles, Point2f from_pt, Point2f to_pt) {
+//     int pt_num = 20;
+//     Point2f seg_dir = (to_pt - from_pt) / pt_num;
+//     float res = FLT_MAX, distance_to_obs;
+//     for (int i = 0; i <= pt_num; i++) {
+//         Point2f test_pt = from_pt + seg_dir * (float) i;
+//         distance_to_obs = MinDistanceToObstaclesVec(obstacles, test_pt);
+//         if (distance_to_obs < res)
+//             res = distance_to_obs;
+//     }
+//     return res;
+// }
+
 bool ObstacleFree(const PolygonObstacle& obs, Point2f p1, Point2f p2) {
     if (obs.vertices.size() <= 1)
         return true;
