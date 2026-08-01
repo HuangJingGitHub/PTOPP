@@ -1,5 +1,5 @@
 # PTOPP
-Core code implementation for passage-traversing optimal path planning (PTOPP) with sampling-based algorithms. This repository is under construction.
+Core implementation for passage-traversing optimal path planning (PTOPP) with sampling-based algorithms [arXiv](https://arxiv.org/abs/2506.23614). This repository is under construction.
 
 > [!IMPORTANT]
 > **Research preview.** The expected environment is Linux with ROS 1 and catkin. The build and run workflow below has not been verified on macOS. ROS distribution and dependency versions are not pinned, so the commands should be treated as the intended workflow rather than a guaranteed reproduction.
