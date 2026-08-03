@@ -2,7 +2,7 @@
 Core implementation for passage-traversing optimal path planning (PTOPP) with sampling-based algorithms [arXiv](https://arxiv.org/abs/2506.23614). This repository is under construction.
 
 > [!IMPORTANT]
-> **Research preview.** The expected environment is Linux with ROS 1 and catkin. The build and run workflow below has not been verified on macOS. ROS distribution and dependency versions are not pinned, so the commands should be treated as the intended workflow rather than a guaranteed reproduction.
+> **Research preview.** The expected environment is Linux with ROS 1 and catkin. The build and run workflow below has not been verified on macOS. The commands should be treated as the intended workflow rather than a guaranteed reproduction.
 
 ## Main features
 
@@ -36,7 +36,7 @@ PTOPP/
             └── img/                    # Generated figures and captures (Git-ignored)
 ```
 
-The core implementation is primarily header-based. Files under `tests/` provide executable examples and research benchmarks.
+The core implementation is primarily header-based. Files under `tests/` provide executable examples and benchmarks.
 
 ## Expected dependencies
 
@@ -50,15 +50,15 @@ Exact installation commands depend on the Linux and ROS releases and are intenti
 
 ## Planning workflow
 
-A typical use of the core planners follows these steps:
+A typical use of the core planners follows:
 
-1. Define the 2D/3D configuration space, start and goal positions, and obstacles. The examples can also generate random obstacles with `GenerateRandomObstacles` or `GenerateRandomObstacles3d`.
+1. Define the 2D/3D workspace, start and goal positions, and obstacles. The examples can also generate random obstacles with `GenerateRandomObstacles` or `GenerateRandomObstacles3d`.
 2. Detect obstacle passages and construct Gabriel cells. The planners perform this internally using routines such as `PassageCheckDelaunayGraphWithWalls` and `ReportGabrielCells` (and their 3D counterparts).
 3. Instantiate `RRTStarPlanner`/`RRTStarPlanner3d` or `PRMStarPlanner`/`PRMStarPlanner3d`, selecting the desired objective family and constraints through the constructor parameters.
 4. For RRT*, call `Plan`. For PRM*, construct the roadmap and query it with `ConstructRoadmap` followed by `QueryPath`.
 5. Retrieve the result with `GetPath` or `GetPathInPts`, then render it with OpenCV or publish it through the RViz visualization helpers.
 
-The numerical cost-mode mappings are still differ between some 2D and 3D experiments. Refer to the planner constructors and the corresponding example source before selecting `cost_function_type`.
+The numerical cost-mode mappings still differ between some 2D and 3D experiments. Refer to the planner constructors before selecting `cost_function_type`.
 
 ## Reference build steps
 
@@ -72,13 +72,13 @@ catkin_make
 source devel/setup.bash
 ```
 
-Run commands from the repository root. Several experiment programs use repository-relative paths when writing optional results.
+Run commands from the repository root.Several experiment programs use repository-relative paths when writing optional results.
 
 ## Running the main examples
 
 ### 2D planning
 
-The main 2D example generates a random obstacle environment and compares RRT*-based passage objectives:
+The main 2D example generates a random obstacle environment and compares various passage objectives:
 
 ```bash
 cd /path/to/PTOPP
@@ -127,24 +127,24 @@ The targets currently registered in `src/ptopp/CMakeLists.txt` are grouped below
 
 | Category | Targets | Purpose |
 | --- | --- | --- |
-| Decomposition | `decomposition_test`, `decomposition_test_3d` | Exercise 2D/3D passage detection and cell decomposition. |
+| Decomposition | `decomposition_test`, `decomposition_test_3d` | 2D/3D passage detection and cell decomposition. |
 | Planning examples | `planning_test_2d`, `planning_test_3d` | Compare PTOPP objectives and visualize resulting paths. |
 | Passage benchmarks | `passage_detection_performance`, `passage_detection_performance_3d`, `passage_detection_geodesic_distance` | Measure passage-detection behavior and runtime. |
-| Planning-time benchmarks | `planning_time_2d`, `planning_time_3d`, `planning_time_sample_2d`, `planning_time_sample_3d` | Evaluate scaling with obstacle or sample counts. |
-| Cost evolution | `planning_cost_evolution_2d`, `planning_cost_evolution_3d` | Record planner cost as the sample count increases. |
+| Planning-time benchmarks | `planning_time_2d`, `planning_time_3d`, `planning_time_sample_2d`, `planning_time_sample_3d` | Evaluate scaling with obstacle or sample numbers. |
+| Cost evolution | `planning_cost_evolution_2d`, `planning_cost_evolution_3d` | Record planner cost as the samples increases. |
 | Utilities | `basic_shapes`, `function_test` | Check ROS marker publication and selected geometry functions. |
 
 Some additional standalone programs are present in `src/ptopp/src/tests/` but are not currently registered as CMake targets.
 
 ## Generated output
 
-Benchmark programs write text logs below `src/ptopp/src/data/`, while visualization programs may write figures below `src/ptopp/src/img/`. These directories are retained for runtime use, but their generated contents, the original analysis scripts, and historical experiment results are intentionally excluded from this open-source release.
+Benchmark programs write text logs below `src/ptopp/src/data/`, while visualization programs may write figures below `src/ptopp/src/img/`. These directories are retained for runtime use, but their generated contents, the original analysis scripts, and historical experiment results are intentionally excluded from the release.
 
-## Current limitations and TODO
+## TODO
 
-- The ROS 1 build and runtime workflow has not been validated in macOS or by continuous integration.
-- The exact ROS distribution, compiler, OpenCV version, and dependency installation procedure are not pinned. Compilation options are NOT optimized for best efficiency.
-- Example scenarios and planner parameters are currently configured directly in the C++ sources rather than through CLI or ROS parameters.
+<!-- - The ROS 1 build and runtime workflow has not been validated in macOS or by continuous integration. -->
+- The dependency installation procedure are not pinned. Compilation options are not optimized for best efficiency.
+- Example scenarios and planner parameters are currently configured directly in source code rather than through CLI or ROS parameters.
 - Several examples use random obstacle generation, so results are not deterministic by default.
 
 ## License
